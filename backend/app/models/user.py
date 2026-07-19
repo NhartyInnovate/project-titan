@@ -1,6 +1,6 @@
 from sqlalchemy import Boolean, Column, DateTime, Integer, String
 from sqlalchemy.sql import func
-
+from sqlalchemy.orm import relationship
 from app.db.database import Base
 
 
@@ -27,4 +27,10 @@ class User(Base):
         DateTime(timezone=True),
         server_default=func.now(),
         onupdate=func.now(),
+    )
+
+    conversations = relationship(
+        "Conversation",
+        back_populates="user",
+        cascade="all, delete-orphan",
     )
