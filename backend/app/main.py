@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.auth import router as auth_router
 from app.api.users import router as users_router
@@ -6,10 +7,24 @@ from app.api.conversation import router as conversation_router
 from app.api.chat import router as chat_router
 from app.core.exceptions import register_exception_handlers
 
+
 app = FastAPI(
     title="Project Titan API",
     version="1.0.0",
 )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:8080",
+        "http://127.0.0.1:8080",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 register_exception_handlers(app)
 
 app.include_router(auth_router)

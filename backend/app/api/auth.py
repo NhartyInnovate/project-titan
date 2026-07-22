@@ -5,9 +5,8 @@ from app.core.auth import create_access_token
 from app.crud.user import authenticate_user
 from app.crud.user import create_user, get_user_by_email
 from app.db.dependencies import get_db
-from app.schemas.user import UserCreate
+from app.schemas.user import UserCreate, LoginRequest
 
-from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter(
     prefix="/auth",
@@ -42,13 +41,13 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login")
 def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
+    data: LoginRequest,
     db: Session = Depends(get_db),
 ):
     user = authenticate_user(
         db,
-        form_data.username,   # we'll use email here
-        form_data.password,
+        data.email,
+        data.password,
     )
 
     if not user:
@@ -58,9 +57,7 @@ def login(
         )
 
     token = create_access_token(
-        {
-            "sub": str(user.id)
-        }
+        {"sub": str(user.id)}
     )
 
     return {
