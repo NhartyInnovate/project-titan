@@ -28,6 +28,7 @@ def chat(
 
         response = process_chat(
             db,
+            current_user.id,
             request.conversation_id,
             request.message,
         )
